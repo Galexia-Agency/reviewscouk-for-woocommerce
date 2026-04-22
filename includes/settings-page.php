@@ -1291,7 +1291,7 @@ if (!defined('ABSPATH')) {
 										<div class="flex-row">
 											<div class="flex-col-xxs-12 flex-col-sm-6">
 												<div class="Field u-marginTop--xxs u-width--100">
-													<input id="floating-react-widget-option" type="hidden" value="<?php echo $floating_react_widget_options ?>">
+													<input id="floating-react-widget-option" type="hidden" value="<?php echo esc_attr($floating_react_widget_options); ?>">
 													<select id="floating-react-widget-options-dropdown" class="Field__input Field__input--globalSelect u-width--100" style="max-width: none;" name='REVIEWSio_floating_react_widget_options'></select>
 												</div>
 											</div>

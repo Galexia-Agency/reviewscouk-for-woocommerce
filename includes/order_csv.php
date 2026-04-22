@@ -39,6 +39,7 @@ function get_order_details($o)
         'order_id' => $order_id,
         'firstname' => $firstname,
         'email' => $email,
+        'date' => $order->get_date_created() ? $order->get_date_created()->date_i18n('d/m/Y') : '',
     ];
 }
 
@@ -83,26 +84,20 @@ foreach ($orders as $o) {
         if ($product) {
             $sku = $product->get_sku();
 
-            if ($product->get_type() == 'variant') {
-                $available_variations = $product->get_available_variations();
-
-                foreach ($available_variations as $variation) {
-                    if ($variation['variation_id'] == $item['variation_id']) {
-                        $sku = $variation['sku'];
-                    }
-                }
+            if ($product->get_type() === 'variation') {
+                $sku = $product->get_sku();
             }
 
-            $productArray[] = [$order_id, $firstname, $email, $sku, get_the_date('d/m/Y', $order_details->order_id)];
+            $productArray[] = [$order_id, $firstname, $email, $sku, $order_details->date];
             $addedItems = true;
         } else {
-            $productArray[] = [$order_id, $firstname, $email, '', get_the_date('d/m/Y', $order_details->order_id)];
+            $productArray[] = [$order_id, $firstname, $email, '', $order_details->date];
             $addedItems = true;
         }
     }
 
     if (!$addedItems) {
-        $productArray[] = [$order_id, $firstname, $email, '', get_the_date('d/m/Y', $order_details->order_id)];
+        $productArray[] = [$order_id, $firstname, $email, '', $order_details->date];
     }
 }
 
@@ -123,7 +118,7 @@ if (WP_Filesystem()) {
     }
 
     // Output your final sanitized CSV contents
-    echo wp_kses_post($csv_content);
+    echo $csv_content;
 
     exit();
 } else {

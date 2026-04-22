@@ -17,9 +17,9 @@ if (WP_Filesystem()) {
     $parentDirectory = dirname(__DIR__);
     $filesDirectory = $parentDirectory . '/files/';
     if (!$wp_filesystem->exists($filesDirectory)) {
-        $wp_filesystem->mkdir($filesDirectory, 0777, true);
+        $wp_filesystem->mkdir($filesDirectory, FS_CHMOD_DIR, true);
     }
-    $url = $_SERVER['REQUEST_URI'];
+    $url = isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '';
     $refreshFeed = explode('?', $url);
     $csvFilePath = $filesDirectory . 'product_feed.csv';
 
@@ -123,7 +123,7 @@ if (WP_Filesystem()) {
 
     // Output your final sanitized CSV contents
     header('Content-Type: text/csv; charset=UTF-8');
-    echo wp_kses_post($csv_contents);
+    echo $csv_contents;
 
     // Save generated file to plugin directory if product feed cron is enabled
     if (get_option('REVIEWSio_enable_product_feed_cron')) {
@@ -161,9 +161,11 @@ function processProducts(&$productArray, $products, $headerArray, $customProduct
         $categories = get_the_terms($product->ID, 'product_cat');
         $categories_string = [];
 
-        foreach ($categories as $cat) {
-            if (!empty($cat->name)) {
-                $categories_string[] = $cat->name;
+        if (is_array($categories) && !is_wp_error($categories)) {
+            foreach ($categories as $cat) {
+                if (!empty($cat->name)) {
+                    $categories_string[] = $cat->name;
+                }
             }
         }
         $categories_json = wp_json_encode($categories_string);
