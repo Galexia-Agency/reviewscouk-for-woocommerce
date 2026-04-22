@@ -189,62 +189,6 @@ if (!class_exists('WooCommerce_Reviews')) {
             return $script;
         }
 
-        protected function get_renderable_footer_script()
-        {
-            $script = $this->get_custom_footer_script();
-
-            if ($script === '') {
-                return '';
-            }
-
-            if (current_user_can('unfiltered_html')) {
-                return $script;
-            }
-
-            return wp_kses($script, [
-                'a' => [
-                    'class' => true,
-                    'href' => true,
-                    'id' => true,
-                    'rel' => true,
-                    'target' => true,
-                    'title' => true,
-                ],
-                'div' => [
-                    'class' => true,
-                    'id' => true,
-                    'style' => true,
-                ],
-                'img' => [
-                    'alt' => true,
-                    'class' => true,
-                    'height' => true,
-                    'id' => true,
-                    'loading' => true,
-                    'src' => true,
-                    'style' => true,
-                    'width' => true,
-                ],
-                'link' => [
-                    'crossorigin' => true,
-                    'href' => true,
-                    'media' => true,
-                    'rel' => true,
-                ],
-                'noscript' => [],
-                'p' => [
-                    'class' => true,
-                    'id' => true,
-                    'style' => true,
-                ],
-                'span' => [
-                    'class' => true,
-                    'id' => true,
-                    'style' => true,
-                ],
-            ]);
-        }
-
         protected function get_sanitized_hook_names($optionName)
         {
             $hooks = get_option($optionName);
@@ -1997,7 +1941,7 @@ if (!class_exists('WooCommerce_Reviews')) {
         {
             $show_on_front_page = get_option('REVIEWSio_footer_show_on_homepage');
             $show_on_collection_pages = get_option('REVIEWSio_footer_show_on_collection_pages');
-            $footer_script = $this->get_renderable_footer_script();
+            $footer_script = $this->get_custom_footer_script();
 
             if ($footer_script === '') {
                 return;
