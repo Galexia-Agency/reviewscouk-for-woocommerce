@@ -79,14 +79,18 @@ foreach ($orders as $o) {
     $addedItems = false;
 
     foreach ($order->get_items() as $item) {
-        $product = wc_get_product($item['product_id']);
+        $product = $item->get_product();
+
+        if (!$product && !empty($item['variation_id'])) {
+            $product = wc_get_product($item['variation_id']);
+        }
+
+        if (!$product && !empty($item['product_id'])) {
+            $product = wc_get_product($item['product_id']);
+        }
 
         if ($product) {
             $sku = $product->get_sku();
-
-            if ($product->get_type() === 'variation') {
-                $sku = $product->get_sku();
-            }
 
             $productArray[] = [$order_id, $firstname, $email, $sku, $order_details->date];
             $addedItems = true;
